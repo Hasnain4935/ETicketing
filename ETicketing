@@ -314,7 +314,8 @@ public class Main {
 
         System.out.print("Destination: "); 
 
-        String destination = scanner.nextLine(); 
+        String destination = scanner.nextLine();
+        System.out.println("\n Automated Details :");
 
  
 
@@ -380,6 +381,8 @@ Price: $1200
 Departure: DSC
 
 Destination: City MP
+
+Automated details :
 
 Total fare: $2400.0
 
