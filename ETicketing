@@ -1,0 +1,394 @@
+import java.util.ArrayList; 
+
+import java.util.Scanner; 
+
+ 
+
+abstract class Ticket { 
+
+    String ticketNumber; 
+
+    private double price; 
+
+ 
+
+    public Ticket(String ticketNumber, double price) { 
+
+        this.ticketNumber = ticketNumber; 
+
+        this.price = price; 
+
+    } 
+
+ 
+
+    public String getTicketNumber() { 
+
+        return ticketNumber; 
+
+    } 
+
+ 
+
+    public double getPrice() { 
+
+        return price; 
+
+    } 
+
+ 
+
+    // Abstract method to calculate total fare 
+
+    public abstract double calculateFare(); 
+
+} 
+
+ 
+
+// Interface representing a printable ticket 
+
+interface Printable { 
+
+    void printTicket(); 
+
+} 
+
+ 
+
+// Class representing an e-ticket 
+
+class ETicket extends Ticket { 
+
+    private String passengerName; 
+
+ 
+
+    public ETicket(String ticketNumber, double price, String passengerName) { 
+
+        super(ticketNumber, price); 
+
+        this.passengerName = passengerName; 
+
+    } 
+
+ 
+
+    public String getPassengerName() { 
+
+        return passengerName; 
+
+    } 
+
+ 
+
+    // Overriding the calculateFare method 
+
+    @Override 
+
+    public double calculateFare() { 
+
+        // Calculate fare based on additional criteria 
+
+        // specific to e-tickets 
+
+        return getPrice(); 
+
+    } 
+
+} 
+
+ 
+
+// Class representing a printed ticket 
+
+class PrintedTicket extends Ticket implements Printable { 
+
+    private String departure; 
+
+    private String destination; 
+
+ 
+
+    public PrintedTicket(String ticketNumber, double price, String departure, String destination) { 
+
+        super(ticketNumber, price); 
+
+        this.departure = departure; 
+
+        this.destination = destination; 
+
+    } 
+
+ 
+
+    public String getDeparture() { 
+
+        return departure; 
+
+    } 
+
+ 
+
+    public String getDestination() { 
+
+        return destination; 
+
+    } 
+
+ 
+
+    // Overriding the calculateFare method 
+
+    @Override 
+
+    public double calculateFare() { 
+
+        // Calculate fare based on additional criteria 
+
+        // such as departure, destination, etc. 
+
+        // Return the total fare 
+
+        return getPrice(); 
+
+    } 
+
+ 
+
+    // Implementing the printTicket method 
+
+    @Override 
+
+    public void printTicket() { 
+
+        System.out.println("Ticket Number: " + getTicketNumber()); 
+
+        System.out.println("Departure: " + getDeparture()); 
+
+        System.out.println("Destination: " + getDestination()); 
+
+        System.out.println("Price: $" + getPrice()); 
+
+    } 
+
+} 
+
+ 
+
+// Exception class for handling invalid ticket exceptions 
+
+class InvalidTicketException extends Exception { 
+
+    public InvalidTicketException(String message) { 
+
+        super(message); 
+
+    } 
+
+} 
+
+ 
+
+// Class representing an e-ticketing system 
+
+class ETicketingSystem { 
+
+    private ArrayList<Ticket> tickets = new ArrayList<>(); 
+
+ 
+
+    public ETicketingSystem() { 
+
+    } 
+
+ 
+
+    // Method overloading to add different types of tickets 
+
+    public void addTicket(Ticket ticket) { 
+
+        tickets.add(ticket); 
+
+    } 
+
+ 
+
+    // Method to calculate total fare for all tickets 
+
+    public double calculateTotalFare() { 
+
+        double totalFare = 0; 
+
+        for (Ticket ticket : tickets) { 
+
+            totalFare += ticket.calculateFare(); 
+
+        } 
+
+        return totalFare; 
+
+    } 
+
+ 
+
+    // Method to validate a ticket 
+
+    public void validateTicket(Ticket ticket) throws InvalidTicketException { 
+
+        if (ticket instanceof PrintedTicket) { 
+
+            PrintedTicket printedTicket = (PrintedTicket) ticket; 
+
+            if (printedTicket.getDeparture() == null || printedTicket.getDestination() == null) { 
+
+                throw new InvalidTicketException("Invalid printed ticket: Missing departure or destination"); 
+
+            } 
+
+        } else if (ticket instanceof ETicket) { 
+
+            ETicket eTicket = (ETicket) ticket; 
+
+            if (eTicket.getPassengerName() == null) { 
+
+                throw new InvalidTicketException("Invalid e-ticket: Missing passenger name"); 
+
+            } 
+
+        } else { 
+
+            throw new InvalidTicketException("Invalid ticket type"); 
+
+        } 
+
+    } 
+
+} 
+
+ 
+
+public class Main { 
+
+    public static void main(String[] args) { 
+
+        ETicketingSystem eTicketingSystem = new ETicketingSystem(); 
+
+        Scanner scanner = new Scanner(System.in); 
+
+ 
+
+        System.out.println("Enter e-ticket details:"); 
+
+        System.out.print("Ticket Number: "); 
+
+        String eTicketNumber = scanner.nextLine(); 
+
+        System.out.print("Price: $"); 
+
+        double eTicketPrice = scanner.nextDouble(); 
+
+        scanner.nextLine(); // Consume the remaining newline character 
+
+        System.out.print("Passenger Name: "); 
+
+        String passengerName = scanner.nextLine(); 
+
+ 
+
+        System.out.println("\nEnter printed ticket details:"); 
+
+        System.out.print("Ticket Number: "); 
+
+        String printedTicketNumber = scanner.nextLine(); 
+
+        System.out.print("Price: $"); 
+
+        double printedTicketPrice = scanner.nextDouble(); 
+
+        scanner.nextLine(); // Consume the remaining newline character 
+
+        System.out.print("Departure: "); 
+
+        String departure = scanner.nextLine(); 
+
+        System.out.print("Destination: "); 
+
+        String destination = scanner.nextLine(); 
+
+ 
+
+        ETicket eTicket = new ETicket(eTicketNumber, eTicketPrice, passengerName); 
+
+        PrintedTicket printedTicket = new PrintedTicket(printedTicketNumber, printedTicketPrice, departure, destination); 
+
+ 
+
+        eTicketingSystem.addTicket(eTicket); 
+
+        eTicketingSystem.addTicket(printedTicket); 
+
+ 
+
+        try { 
+
+            eTicketingSystem.validateTicket(eTicket); 
+
+            eTicketingSystem.validateTicket(printedTicket); 
+
+        } catch (InvalidTicketException e) { 
+
+            System.out.println("Invalid ticket: " + e.getMessage()); 
+
+        } 
+
+ 
+
+        System.out.println("\nTotal fare: $" + eTicketingSystem.calculateTotalFare()); 
+
+ 
+
+        // Example of printing a printed ticket 
+
+        if (printedTicket instanceof Printable) { 
+
+            Printable printableTicket = (Printable) printedTicket; 
+
+            printableTicket.printTicket(); 
+
+        } 
+
+    } 
+
+}
+
+
+Output :Enter e-ticket details:
+
+Ticket Number: 4935
+
+Price: $1200
+
+Passenger Name: MR. Ahmad
+
+Enter printed ticket details:
+
+Ticket Number: 4783
+
+Price: $1200
+
+Departure: DSC
+
+Destination: City MP
+
+Total fare: $2400.0
+
+Ticket Number: 4783
+
+Departure: DSC
+
+Destination: City MP
+
+Price: $1200.0
+
+Process finished with exit code 0
